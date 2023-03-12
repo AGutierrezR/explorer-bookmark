@@ -9,9 +9,19 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onView:explorer-manager-bookmark"
+  ],
   "main": "./out/extension.js",
   "contributes": {
+    "views": {
+      "explorer": [
+        {
+          "id": "explorer-manager-bookmark",
+          "name": "Explorer Bookmark+"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "explorer-manager-bookmark.helloWorld",
