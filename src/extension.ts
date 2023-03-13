@@ -17,7 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
       ),
       vscode.commands.registerCommand(
         'explorer-manager-bookmark.addEntry',
-        () => explorerBookmark.addEntry(),
+        (file) => explorerBookmark.addEntry(vscode.Uri.parse(file.path)),
       ),
       vscode.commands.registerCommand(
         'explorer-manager-bookmark.removeEntry',
