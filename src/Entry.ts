@@ -9,5 +9,13 @@ export class Entry extends vscode.TreeItem {
     super(label, collapsibleState);
     this.tooltip = uri.fsPath;
     this.resourceUri = uri;
+    this.command =
+      collapsibleState === vscode.TreeItemCollapsibleState.None
+        ? {
+            arguments: [this],
+            command: 'explorer-manager-bookmark.openFile',
+            title: this.label,
+          }
+        : undefined;
   }
 }

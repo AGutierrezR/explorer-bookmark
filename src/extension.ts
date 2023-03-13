@@ -16,6 +16,15 @@ export function activate(context: vscode.ExtensionContext) {
         () => explorerBookmark.refresh(),
       ),
       vscode.commands.registerCommand(
+        'explorer-manager-bookmark.openFile',
+        (file) => {
+          vscode.commands.executeCommand(
+            'vscode.open',
+            vscode.Uri.parse(file.resourceUri.path),
+          );
+        },
+      ),
+      vscode.commands.registerCommand(
         'explorer-manager-bookmark.addEntry',
         (file) => explorerBookmark.addEntry(vscode.Uri.parse(file.path)),
       ),
