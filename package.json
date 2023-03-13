@@ -24,8 +24,16 @@
     },
     "commands": [
       {
-        "command": "explorer-manager-bookmark.helloWorld",
-        "title": "Hello World"
+        "command": "explorer-manager-bookmark.refreshEntry",
+        "title": "Refresh Explorer Bookmark+"
+      },
+      {
+        "command": "explorer-manager-bookmark.addEntry",
+        "title": "Add to Explorer Bookmark+"
+      },
+      {
+        "command": "explorer-manager-bookmark.removeEntry",
+        "title": "Remove from Explorer Bookmark+"
       }
     ]
   },
