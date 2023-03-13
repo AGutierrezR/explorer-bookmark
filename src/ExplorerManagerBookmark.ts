@@ -1,9 +1,10 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { Entry } from './Entry';
+import { getCollapsibleStateByType } from './utils/getCollapsibleStateByType';
 
 export class ExplorerManagerBookmark implements vscode.TreeDataProvider<Entry> {
-  private addedEntries: vscode.Uri[] = [];
+  private addedEntries: Entry[] = [];
 
   private _onDidChangeTreeData: vscode.EventEmitter<
     Entry | undefined | null | void
@@ -17,7 +18,7 @@ export class ExplorerManagerBookmark implements vscode.TreeDataProvider<Entry> {
 
   async getChildren(element?: Entry): Promise<Entry[]> {
     if (this.addedEntries.length > 0) {
-      return this.createEntries(this.addedEntries);
+      return this.addedEntries;
     }
 
     return Promise.resolve([]);
@@ -27,9 +28,14 @@ export class ExplorerManagerBookmark implements vscode.TreeDataProvider<Entry> {
     this._onDidChangeTreeData.fire();
   }
 
-  addEntry(uri: vscode.Uri | undefined) {
+  async addEntry(uri: vscode.Uri | undefined) {
     if (uri) {
-      this.addedEntries.push(uri);
+      const entryType = (await vscode.workspace.fs.stat(uri)).type;
+      const collapsibleState = getCollapsibleStateByType(entryType);
+
+      this.addedEntries.push(
+        new Entry(`${path.basename(uri.path)}`, collapsibleState, uri),
+      );
     }
 
     this.refresh();
@@ -38,23 +44,6 @@ export class ExplorerManagerBookmark implements vscode.TreeDataProvider<Entry> {
   removeEntry() {
     console.log('removeEntry');
   }
-  private async createEntries(addedEntries: vscode.Uri[]) {
-    let entries: Entry[] = [];
 
-    for (const item of addedEntries) {
-      let entryType = (await vscode.workspace.fs.stat(item)).type;
 
-      entries.push(
-        new Entry(
-          `${path.basename(item.path)}`,
-          entryType === vscode.FileType.File
-            ? vscode.TreeItemCollapsibleState.None
-            : vscode.TreeItemCollapsibleState.Collapsed,
-          item,
-        ),
-      );
-    }
-
-    return entries;
-  }
 }
