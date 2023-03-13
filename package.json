@@ -25,7 +25,8 @@
     "commands": [
       {
         "command": "explorer-manager-bookmark.refreshEntry",
-        "title": "Refresh Explorer Bookmark+"
+        "title": "Refresh Explorer Bookmark+",
+        "icon": "$(refresh)"
       },
       {
         "command": "explorer-manager-bookmark.addEntry",
@@ -37,6 +38,13 @@
       }
     ],
     "menus": {
+      "view/title": [
+        {
+          "command": "explorer-manager-bookmark.refreshEntry",
+          "when": "view == explorer-manager-bookmark",
+          "group": "navigation"
+        }
+      ],
       "explorer/context": [
         {
           "command": "explorer-manager-bookmark.addEntry"
