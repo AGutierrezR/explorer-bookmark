@@ -1,25 +1,27 @@
 import * as vscode from 'vscode';
+import { ExplorerManagerBookmark } from './ExplorerManagerBookmark';
 
 export function activate(context: vscode.ExtensionContext) {
+  const explorerBookmark = new ExplorerManagerBookmark();
+
+  vscode.window.registerTreeDataProvider(
+    'explorer-manager-bookmark',
+    explorerBookmark,
+  );
+
   context.subscriptions.push(
     ...[
       vscode.commands.registerCommand(
         'explorer-manager-bookmark.refreshEntry',
-        () => {
-          vscode.window.showInformationMessage('refreshEntry command!');
-        },
+        () => explorerBookmark.refresh(),
       ),
       vscode.commands.registerCommand(
         'explorer-manager-bookmark.addEntry',
-        (args) => {
-          vscode.window.showInformationMessage('addEntry command!');
-        },
+        () => explorerBookmark.addEntry(),
       ),
       vscode.commands.registerCommand(
         'explorer-manager-bookmark.removeEntry',
-        (args) => {
-          vscode.window.showInformationMessage('removeEntry command!');
-        },
+        () => explorerBookmark.removeEntry(),
       ),
     ],
   );
