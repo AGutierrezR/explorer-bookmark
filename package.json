@@ -34,7 +34,8 @@
       },
       {
         "command": "explorer-manager-bookmark.removeEntry",
-        "title": "Remove from Explorer Bookmark+"
+        "title": "Remove from Explorer Bookmark+",
+        "icon": "$(close)"
       }
     ],
     "menus": {
@@ -48,6 +49,13 @@
       "explorer/context": [
         {
           "command": "explorer-manager-bookmark.addEntry"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "explorer-manager-bookmark.removeEntry",
+          "when": "view == explorer-manager-bookmark",
+          "group": "inline"
         }
       ]
     }

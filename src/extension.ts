@@ -30,7 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
       ),
       vscode.commands.registerCommand(
         'explorer-manager-bookmark.removeEntry',
-        () => explorerBookmark.removeEntry(),
+        (file) => explorerBookmark.removeEntry(file.resourceUri),
       ),
     ],
   );

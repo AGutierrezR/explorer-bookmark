@@ -46,8 +46,14 @@ export class ExplorerManagerBookmark implements vscode.TreeDataProvider<Entry> {
     this.refresh();
   }
 
-  removeEntry() {
-    console.log('removeEntry');
+  removeEntry(uri: vscode.Uri | undefined) {
+    if (uri) {
+      const index = this.addedEntries.findIndex((x) => x.resourceUri === uri);
+      if (index > -1) {
+        this.addedEntries.splice(index, 1);
+      }
+    }
+    this.refresh();
   }
 
   private async directorySearch(uri: vscode.Uri) {
