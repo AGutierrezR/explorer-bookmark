@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { Entry } from './Entry';
+import { nativeFileSorting } from './utils/nativeFilesOrder';
 import { getCollapsibleStateByType } from './utils/getCollapsibleStateByType';
 
 export class ExplorerManagerBookmark implements vscode.TreeDataProvider<Entry> {
@@ -17,6 +18,10 @@ export class ExplorerManagerBookmark implements vscode.TreeDataProvider<Entry> {
   }
 
   async getChildren(element?: Entry): Promise<Entry[]> {
+    if (element?.resourceUri) {
+      return this.directorySearch(element.resourceUri);
+    }
+
     if (this.addedEntries.length > 0) {
       return this.addedEntries;
     }
@@ -45,5 +50,17 @@ export class ExplorerManagerBookmark implements vscode.TreeDataProvider<Entry> {
     console.log('removeEntry');
   }
 
+  private async directorySearch(uri: vscode.Uri) {
+    const folders = await vscode.workspace.fs.readDirectory(uri);
+    return folders.sort(nativeFileSorting).map((item) => {
+      const [name, type] = item;
+      const collapsibleState = getCollapsibleStateByType(type);
 
+      return new Entry(
+        name,
+        collapsibleState,
+        vscode.Uri.joinPath(uri, '/' + name),
+      );
+    });
+  }
 }
