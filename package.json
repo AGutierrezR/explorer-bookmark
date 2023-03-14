@@ -54,7 +54,7 @@
       "view/item/context": [
         {
           "command": "explorer-manager-bookmark.removeEntry",
-          "when": "view == explorer-manager-bookmark",
+          "when": "view == explorer-manager-bookmark && viewItem == savedEntry",
           "group": "inline"
         }
       ]

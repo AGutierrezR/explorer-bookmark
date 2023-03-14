@@ -39,7 +39,11 @@ export class ExplorerManagerBookmark implements vscode.TreeDataProvider<Entry> {
       const collapsibleState = getCollapsibleStateByType(entryType);
 
       this.addedEntries.push(
-        new Entry(`${path.basename(uri.path)}`, collapsibleState, uri),
+        new Entry(
+          `${path.basename(uri.path)}`,
+          collapsibleState,
+          uri,
+        ).setContextValue('savedEntry'),
       );
     }
 

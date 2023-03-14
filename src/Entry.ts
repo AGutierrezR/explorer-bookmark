@@ -18,4 +18,9 @@ export class Entry extends vscode.TreeItem {
           }
         : undefined;
   }
+
+  setContextValue(value: string) {
+    this.contextValue = value;
+    return this;
+  }
 }
