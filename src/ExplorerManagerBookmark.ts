@@ -3,9 +3,10 @@ import * as path from 'path';
 import { Entry } from './Entry';
 import { nativeFileSorting } from './utils/nativeFilesOrder';
 import { getCollapsibleStateByType } from './utils/getCollapsibleStateByType';
+import { safe } from './utils/safe';
 
 export class ExplorerManagerBookmark implements vscode.TreeDataProvider<Entry> {
-  private addedEntries: Entry[] = [];
+  private addedEntries: vscode.Uri[] = [];
 
   private _onDidChangeTreeData: vscode.EventEmitter<
     Entry | undefined | null | void
@@ -23,7 +24,7 @@ export class ExplorerManagerBookmark implements vscode.TreeDataProvider<Entry> {
     }
 
     if (this.addedEntries.length > 0) {
-      return this.addedEntries;
+      return this.createEntries(this.addedEntries);
     }
 
     return Promise.resolve([]);
@@ -35,16 +36,7 @@ export class ExplorerManagerBookmark implements vscode.TreeDataProvider<Entry> {
 
   async addEntry(uri: vscode.Uri | undefined) {
     if (uri) {
-      const entryType = (await vscode.workspace.fs.stat(uri)).type;
-      const collapsibleState = getCollapsibleStateByType(entryType);
-
-      this.addedEntries.push(
-        new Entry(
-          `${path.basename(uri.path)}`,
-          collapsibleState,
-          uri,
-        ).setContextValue('savedEntry'),
-      );
+      this.addedEntries.push(uri);
     }
 
     this.refresh();
@@ -52,7 +44,7 @@ export class ExplorerManagerBookmark implements vscode.TreeDataProvider<Entry> {
 
   removeEntry(uri: vscode.Uri | undefined) {
     if (uri) {
-      const index = this.addedEntries.findIndex((x) => x.resourceUri === uri);
+      const index = this.addedEntries.indexOf(uri);
       if (index > -1) {
         this.addedEntries.splice(index, 1);
       }
@@ -72,5 +64,31 @@ export class ExplorerManagerBookmark implements vscode.TreeDataProvider<Entry> {
         vscode.Uri.joinPath(uri, '/' + name),
       );
     });
+  }
+
+  private async createEntries(addedEntries: vscode.Uri[]) {
+    let entries: Entry[] = [];
+
+    for (const item of addedEntries) {
+      const [entryType, fileNotFound] = await safe(() =>
+        vscode.workspace.fs.stat(item).then((stat) => stat.type),
+      );
+
+      if (fileNotFound || !entryType) {
+        continue;
+      }
+
+      const collapsibleState = getCollapsibleStateByType(entryType);
+
+      entries.push(
+        new Entry(
+          `${path.basename(item.path)}`,
+          collapsibleState,
+          item,
+        ).setContextValue('savedEntry'),
+      );
+    }
+
+    return entries;
   }
 }
